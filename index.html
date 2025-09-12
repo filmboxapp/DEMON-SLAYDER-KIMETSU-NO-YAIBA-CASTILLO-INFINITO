@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detalle Compacto</title>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #111;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Fondo detrás del póster con gradiente hacia negro */
+.detail-background {
+  width: 100%;
+  height: 250px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.detail-background::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(17,17,17,0) 60%, rgba(17,17,17,1) 100%);
+}
+
+/* Contenedor central compacto */
+.detail-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 280px;
+  margin-top: -120px;
+  z-index: 1;
+  gap: 10px;
+}
+
+/* Póster pequeño y centrado */
+.poster-container img {
+  width: 160px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.7);
+}
+
+/* Detalles debajo del póster */
+.details-container {
+  text-align: center;
+  width: 100%;
+  background-color: #111;
+  padding: 15px;
+  border-radius: 10px;
+  position: relative;
+}
+
+.details-container h1 {
+  font-size: 18px;
+  margin: 5px 0 5px;
+  color: #fff;
+}
+
+.details-container .info {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.details-container .info .item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #fff;
+}
+
+.details-container .info svg {
+  width: 12px;
+  height: 12px;
+  fill: #fff;
+}
+
+/* Sinopsis */
+.details-container .sinopsis-wrapper {
+  max-height: 80px;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  position: relative;
+  padding-bottom: 10px; /* espacio extra para que no choque con botón */
+}
+
+.details-container p {
+  font-size: 13px;
+  line-height: 1.3;
+  color: #fff;
+  margin: 0;
+}
+
+.details-container .ver-mas {
+  color: #e81c1c;
+  cursor: pointer;
+  font-size: 13px;
+  margin-top: 4px;
+  display: none; /* oculto por defecto */
+}
+
+/* Botón de reproducción más grande fijo en la esquina */
+.play-btn {
+  width: 70px;
+  height: 70px;
+  background: #e81c1c;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  text-decoration: none;
+  color: #fff;
+  font-size: 30px;
+  box-shadow: 0 0 10px rgba(255,255,255,0.5);
+  z-index: 2;
+}
+
+.play-btn:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s;
+}
+</style>
+</head>
+<body>
+
+<div class="detail-background" id="detailBackground"></div>
+
+<div class="detail-container">
+  <div class="poster-container">
+    <img id="detailPoster" src="" alt="Póster">
+  </div>
+  <div class="details-container">
+    <h1 id="detailTitle"></h1>
+    <div class="info">
+      <div class="item">
+        <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V9h14z"></path></svg>
+        <span id="detailYear">2025</span>
+      </div>
+      <div class="item">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 11h4v2h-6V7h2z"></path></svg>
+        <span id="detailDuration">120 min</span>
+      </div>
+      <div class="item">
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z "></path></svg>
+        <span id="detailRating">8.5</span>
+      </div>
+    </div>
+    <div class="sinopsis-wrapper" id="sinopsisWrapper">
+      <p id="detailSynopsis"></p>
+    </div>
+    <div class="ver-mas" id="verMasBtn">Ver más</div>
+  </div>
+</div>
+
+<a id="detailPlay" href="" target="_blank" class="play-btn">▶</a>
+
+<script>
+function showMovieDetail(posterUrl, backgroundUrl, title, year, duration, rating, synopsis, videoUrl) {
+  document.getElementById('detailPoster').src = posterUrl;
+  document.getElementById('detailBackground').style.backgroundImage = `url('${backgroundUrl}')`;
+  document.getElementById('detailTitle').textContent = title;
+  document.getElementById('detailYear').textContent = year;
+  document.getElementById('detailDuration').textContent = duration;
+  document.getElementById('detailRating').textContent = rating;
+
+  const sinopsisElem = document.getElementById('detailSynopsis');
+  const wrapper = document.getElementById('sinopsisWrapper');
+  const verMasBtn = document.getElementById('verMasBtn');
+
+  sinopsisElem.textContent = synopsis;
+
+  setTimeout(() => {
+    if (sinopsisElem.scrollHeight > wrapper.clientHeight) {
+      verMasBtn.style.display = 'block';
+    } else {
+      verMasBtn.style.display = 'none';
+    }
+  }, 50);
+
+  verMasBtn.onclick = () => {
+    if (wrapper.style.maxHeight === '80px' || wrapper.style.maxHeight === '') {
+      wrapper.style.maxHeight = '200px';
+      wrapper.style.overflowY = 'auto';
+      verMasBtn.textContent = 'Ver menos';
+    } else {
+      wrapper.style.maxHeight = '80px';
+      wrapper.style.overflowY = 'hidden';
+      verMasBtn.textContent = 'Ver más';
+    }
+  }
+
+  document.getElementById('detailPlay').href = videoUrl;
+}
+
+// Ejemplo
+showMovieDetail(
+  'https://image.tmdb.org/t/p/original/6N21gcFbhT4ocdTU4MGREAaM5Vz.jpg',
+  'https://image.tmdb.org/t/p/original/1RgPyOhN4DRs225BGTlHJqCudII.jpg',
+  'DEMON SLAYDER KIMETSU NO YAIBA CASTILLO INFINITO',
+  '2025',
+  '2 h 35 min',
+  '7.4',
+  'El Cuerpo de Cazadores de Demonios se adentra en el Castillo Infinito, donde Tanjiro, Nezuko y los Hashira se enfrentan a terroríficos demonios de rango superior en una lucha desesperada mientras comienza la batalla final contra Muzan Kibutsuji.',
+  'https://lzplayerfree.blogspot.com/?url=U2FsdGVkX1%2FzVWPYa7aYNr3Gz00jEgXMLKl9cxEbe%2BoDUWU5166wkF5sbLIjJ8W9k3VeZosJRK6GuWQDafg%2B4J07zcl47%2B7pHJrm7d4VUFtMVZ6CXF%2BmvgmbwmVxJg%2Fs'
+);
+</script>
+
+</body>
+</html>
